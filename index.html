@@ -19,6 +19,7 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet-contextmenu@1.4.0/dist/leaflet.contextmenu.css" integrity="sha256-HT+5744sTpD3WFRoUidHtHavpSbRwV0f/0munxLNKGU=" crossorigin=""/>
 	<script src="https://unpkg.com/leaflet-contextmenu@1.4.0/dist/leaflet.contextmenu.min.js" integrity="sha256-I3zyDVArt4ZrRcCzTUp6OiNmD5KuDsZCvhG+yZt8lhE=" crossorigin=""></script>
 
+    <!-- leaflet geosearch overpassProvider -->
 	<script src="./overpassProvider.js"></script>
 
 	<style>
@@ -43,12 +44,14 @@
 <div id="map" style="width: 100%; height: 100%;"></div>
 <script>
 
+	var lastLat = localStorage.getItem('lastLat') || 35.800542;
+	var lastLng = localStorage.getItem('lastLng') || 139.469826;
     // Initialize the map
 	const map = L.map('map',{
 		contextmenu: false,
 		contextmenuWidth: 180,
 	});
-	map.setView([35.800542, 139.469826], 13);
+	map.setView([lastLat, lastLng], 13);
 
     // Add a tile layer (OpenStreetMap)
 	const tiles = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -78,10 +81,7 @@
     map.addControl(searchControl);
 
 	map.on('geosearch/showlocation', function(e) {
-	  // e.marker で検索されたマーカーにアクセス可能
-	  // 例: ポップアップに住所を表示
-	  // e.marker.bindPopup(e.location.label).openPopup();
-	  console.log(e);
+	  // console.log(e);
 	});
 
 	map.on('moveend', function() {
@@ -91,53 +91,11 @@
 		var west = bounds.getWest();
 		var north = bounds.getNorth();
 		var east = bounds.getEast();
-		console.log(`[bbox:${south},${west},${north},${east}]`)
+
+	    var center = map.getCenter();
+	    localStorage.setItem('lastLat', center.lat);
+	    localStorage.setItem('lastLng', center.lng);
 	});
-
-	/*
-      L.marker([35.800542, 139.469826], {
-          contextmenu: true,
-          contextmenuItems: [{
-              text: 'Marker item',
-              index: 0
-          }, {
-              separator: true,
-              index: 1
-          }]
-      }).addTo(map);
-	*/
-
-	/*
-	const marker = L.marker([51.5, -0.09]).addTo(map)
-		.bindPopup('<b>Hello world!</b><br />I am a popup.').openPopup();
-
-	const circle = L.circle([51.508, -0.11], {
-		color: 'red',
-		fillColor: '#f03',
-		fillOpacity: 0.5,
-		radius: 500
-	}).addTo(map).bindPopup('I am a circle.');
-
-	const polygon = L.polygon([
-		[51.509, -0.08],
-		[51.503, -0.06],
-		[51.51, -0.047]
-	]).addTo(map).bindPopup('I am a polygon.');
-
-
-	const popup = L.popup()
-		.setLatLng([51.513, -0.09])
-		.setContent('I am a standalone popup.')
-		.openOn(map);
-	function onMapClick(e) {
-		popup
-			.setLatLng(e.latlng)
-			.setContent(`You clicked the map at ${e.latlng.toString()}`)
-			.openOn(map);
-	}
-
-	map.on('click', onMapClick);
-	*/
 
 </script>
 
