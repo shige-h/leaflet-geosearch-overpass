@@ -15,6 +15,12 @@
     <link rel="stylesheet" href="https://unpkg.com/leaflet-geosearch@4.4.0/dist/geosearch.css" integrity="sha256-p+jKGIZe6dprRIMUXUr2GApehNzk6FJ0I7SFU20mQVs=" crossorigin=""/>
     <script src="https://unpkg.com/leaflet-geosearch@4.4.0/dist/bundle.min.js" integrity="sha256-8blmlZY4SVHTw9k4jVCjsHjG8nCUTUpooHUDPb2QV4k=" crossorigin=""></script>
 
+	<!-- leaflet.contextmenu -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet-contextmenu@1.4.0/dist/leaflet.contextmenu.css" integrity="sha256-HT+5744sTpD3WFRoUidHtHavpSbRwV0f/0munxLNKGU=" crossorigin=""/>
+	<script src="https://unpkg.com/leaflet-contextmenu@1.4.0/dist/leaflet.contextmenu.min.js" integrity="sha256-I3zyDVArt4ZrRcCzTUp6OiNmD5KuDsZCvhG+yZt8lhE=" crossorigin=""></script>
+
+	<script src="./overpassProvider.js"></script>
+
 	<style>
 		html, body {
 			height: 100%;
@@ -38,7 +44,11 @@
 <script>
 
     // Initialize the map
-	const map = L.map('map').setView([35.800542, 139.469826], 13);
+	const map = L.map('map',{
+		contextmenu: false,
+		contextmenuWidth: 180,
+	});
+	map.setView([35.800542, 139.469826], 13);
 
     // Add a tile layer (OpenStreetMap)
 	const tiles = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -47,7 +57,7 @@
 	}).addTo(map);
 
 	// Configure the GeoSearch control
-	const provider = new GeoSearch.OpenStreetMapProvider();
+	const provider = new overpassProvider({map: map});
 
 	const searchControl = new GeoSearch.GeoSearchControl({
 		provider: provider,
@@ -60,12 +70,42 @@
 			draggable: false,
 		},
 		autoClose: true, // Automatically close the search results list on selection
-		keepResult: false, // Keep the search result marker after the control is closed
+		keepResult: true, // Keep the search result marker after the control is closed
 		searchLabel: 'Enter address', // Placeholder text in the search bar
 	});
 
     // Add the search control to the map
     map.addControl(searchControl);
+
+	map.on('geosearch/showlocation', function(e) {
+	  // e.marker で検索されたマーカーにアクセス可能
+	  // 例: ポップアップに住所を表示
+	  // e.marker.bindPopup(e.location.label).openPopup();
+	  console.log(e);
+	});
+
+	map.on('moveend', function() {
+		console.log(map.getBounds());
+		var bounds = map.getBounds();
+		var south = bounds.getSouth();
+		var west = bounds.getWest();
+		var north = bounds.getNorth();
+		var east = bounds.getEast();
+		console.log(`[bbox:${south},${west},${north},${east}]`)
+	});
+
+	/*
+      L.marker([35.800542, 139.469826], {
+          contextmenu: true,
+          contextmenuItems: [{
+              text: 'Marker item',
+              index: 0
+          }, {
+              separator: true,
+              index: 1
+          }]
+      }).addTo(map);
+	*/
 
 	/*
 	const marker = L.marker([51.5, -0.09]).addTo(map)
