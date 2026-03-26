@@ -20,7 +20,7 @@
 	<script src="https://unpkg.com/leaflet-contextmenu@1.4.0/dist/leaflet.contextmenu.min.js" integrity="sha256-I3zyDVArt4ZrRcCzTUp6OiNmD5KuDsZCvhG+yZt8lhE=" crossorigin=""></script>
 
     <!-- leaflet geosearch overpassProvider -->
-	<script src="./overpassProvider.js"></script>
+	<script src="./dist/overpassProvider.js"></script>
 
 	<style>
 		html, body {
@@ -60,10 +60,12 @@
 	}).addTo(map);
 
 	// Configure the GeoSearch control
-	const provider = new overpassProvider({map: map});
+	const provider = new GeoSearchOverpass.overpassProvider({map: map});
 
 	const searchControl = new GeoSearch.GeoSearchControl({
 		provider: provider,
+		// autoComplete: false,
+		autoCompleteDelay: 3000,
 		style: 'bar', // Display style: 'bar' (default), 'button', 'minimal'
 		showMarker: true, // Show a marker on the map
 		showPopup: false, // Show a popup with the address
@@ -85,13 +87,6 @@
 	});
 
 	map.on('moveend', function() {
-		console.log(map.getBounds());
-		var bounds = map.getBounds();
-		var south = bounds.getSouth();
-		var west = bounds.getWest();
-		var north = bounds.getNorth();
-		var east = bounds.getEast();
-
 	    var center = map.getCenter();
 	    localStorage.setItem('lastLat', center.lat);
 	    localStorage.setItem('lastLng', center.lng);

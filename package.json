@@ -1,0 +1,32 @@
+{
+  "name": "leaflet-geosearch-overpass",
+  "version": "1.0.0",
+  "description": "leaflet-geosearch's overpass API provider",
+  "main": "src/overpassProvider.ts",
+  "scripts": {
+    "build:dist": "webpack"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shige-h/leaflet-geosearch-overpass.git"
+  },
+  "keywords": [
+    "leaflet",
+    "leaflet-geosearch"
+  ],
+  "author": "shige-h",
+  "license": "MIT",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/shige-h/leaflet-geosearch-overpass/issues"
+  },
+  "homepage": "https://github.com/shige-h/leaflet-geosearch-overpass#readme",
+  "devDependencies": {
+    "@types/leaflet": "^1.9.21",
+    "leaflet-geosearch": "^4.4.0",
+    "ts-loader": "^9.5.4",
+    "typescript": "^6.0.2",
+    "webpack": "^5.105.4",
+    "webpack-cli": "^7.0.2"
+  }
+}
